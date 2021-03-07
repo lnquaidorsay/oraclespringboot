@@ -2,6 +2,7 @@ package com.id.OracleSpringBoot.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.id.OracleSpringBoot.entite.RoleEntite;
 import com.id.OracleSpringBoot.entite.UserEntite;
@@ -9,6 +10,7 @@ import com.id.OracleSpringBoot.repository.RoleRepository;
 import com.id.OracleSpringBoot.repository.UserRepository;
 import com.id.OracleSpringBoot.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired

@@ -9,8 +9,6 @@ import com.id.OracleSpringBoot.entite.UserEntite;
 public interface UserRepository extends JpaRepository<UserEntite, Long> {
 	UserEntite findByEmail(String email);
 
-	UserEntite findByUserId(String userId);
-
 	/*
 	 * @Query(value =
 	 * "SELECT * FROM utilisateurs u WHERE (u.prenom LIKE %:search% OR u.nom LIKE %:search%) AND u.email_verification_status = :status"
