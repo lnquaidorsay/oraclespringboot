@@ -3,18 +3,24 @@ package com.id.OracleSpringBoot.entite;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "Utilisateurs")
 public class UserEntite {
 	@Id
+	@Column(name = "utilisateur_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
@@ -29,7 +35,9 @@ public class UserEntite {
 	// Permettant d'activer ou désactiver le compte
 	private boolean actived;
 
+	// @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "utilisateur_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private List<RoleEntite> roles = new ArrayList<RoleEntite>();
 
 	public UserEntite() {
@@ -85,6 +93,7 @@ public class UserEntite {
 		this.actived = actived;
 	}
 
+	@JsonIgnore
 	public List<RoleEntite> getRoles() {
 		return roles;
 	}

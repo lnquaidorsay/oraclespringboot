@@ -1,5 +1,6 @@
 package com.id.OracleSpringBoot.entite;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,7 @@ import javax.persistence.Table;
 @Table(name = "RoleUtilisateur")
 public class RoleEntite {
 	@Id
+	@Column(name = "role_id")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 

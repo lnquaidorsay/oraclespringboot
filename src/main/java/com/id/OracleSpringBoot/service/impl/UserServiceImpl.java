@@ -1,5 +1,8 @@
 package com.id.OracleSpringBoot.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,17 +33,20 @@ public class UserServiceImpl implements UserService {
 
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-		UserEntite newUser = userRepository.save(user);
+		List<RoleEntite> mesRoles = new ArrayList<RoleEntite>();
 
 		if (user.getRoles() != null) {
 
-			for (int i = 0; i < user.getRoles().size(); i++) {
-
-				RoleEntite role = user.getRoles().get(i);
-				ajoutRoleToUser(newUser, role);
+			for (RoleEntite role : user.getRoles()) {
+				RoleEntite unRole = roleRepository.findByNom(role.getNom());
+				mesRoles.add(unRole);
 			}
 
+			user.setRoles(mesRoles);
+
 		}
+
+		UserEntite newUser = userRepository.save(user);
 
 		return newUser;
 	}

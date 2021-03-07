@@ -1,11 +1,16 @@
 package com.id.OracleSpringBoot.response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserResponse {
 	private Long id;
 	private String nom;
 	private String prenom;
 	private String email;
 	boolean actived;
+	// private List<RoleEntite> roles = new ArrayList<RoleEntite>();
+	private List<RoleEntiteResponse> roles = new ArrayList<RoleEntiteResponse>();
 
 	public UserResponse() {
 		super();
@@ -49,6 +54,14 @@ public class UserResponse {
 
 	public void setActived(boolean actived) {
 		this.actived = actived;
+	}
+
+	public List<RoleEntiteResponse> getRole() {
+		return roles;
+	}
+
+	public void setRole(List<RoleEntiteResponse> role) {
+		this.roles = role;
 	}
 
 }
