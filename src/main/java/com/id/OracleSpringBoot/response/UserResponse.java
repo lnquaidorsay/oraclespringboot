@@ -8,6 +8,7 @@ public class UserResponse {
 	private String nom;
 	private String prenom;
 	private String email;
+	private String password;
 	boolean actived;
 	// private List<RoleEntite> roles = new ArrayList<RoleEntite>();
 	private List<RoleEntiteResponse> roles = new ArrayList<RoleEntiteResponse>();
@@ -56,12 +57,20 @@ public class UserResponse {
 		this.actived = actived;
 	}
 
-	public List<RoleEntiteResponse> getRole() {
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<RoleEntiteResponse> getRoles() {
 		return roles;
 	}
 
-	public void setRole(List<RoleEntiteResponse> role) {
-		this.roles = role;
+	public void setRoles(List<RoleEntiteResponse> roles) {
+		this.roles = roles;
 	}
 
 }

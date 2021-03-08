@@ -1,6 +1,5 @@
 package com.id.OracleSpringBoot.entite;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -38,7 +37,8 @@ public class UserEntite {
 	// @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "utilisateur_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private List<RoleEntite> roles = new ArrayList<RoleEntite>();
+	// private List<RoleEntite> roles = new ArrayList<RoleEntite>();
+	private List<RoleEntite> roles;
 
 	public UserEntite() {
 		super();

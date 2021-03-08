@@ -1,9 +1,16 @@
 package com.id.OracleSpringBoot.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +58,23 @@ public class UserServiceImpl implements UserService {
 		return newUser;
 	}
 
+	private void addUserRole(UserEntite user) {
+		Set<RoleEntite> roles = new HashSet<RoleEntite>();
+		RoleEntite roleUser = new RoleEntite();// initialisation du rôle ROLE_USER
+		roleUser.setNom("USER");
+		roles.add(roleUser);
+		Set<RoleEntite> roleFromDB = extractRole_Java8(roles, roleRepository.getAllRolesStream());
+		// user.set(roleFromDB);
+	}
+
+	private Set<RoleEntite> extractRole_Java8(Set<RoleEntite> rolesSetFromUser, Stream<RoleEntite> roleStreamFromDB) {
+		// Collect UI role names
+		Set<String> uiRoleNames = rolesSetFromUser.stream().map(RoleEntite::getNom)
+				.collect(Collectors.toCollection(HashSet::new));
+		// Filter DB roles
+		return roleStreamFromDB.filter(role -> uiRoleNames.contains(role.getNom())).collect(Collectors.toSet());
+	}
+
 	@Override
 	public UserEntite getUser(String email) {
 		return userRepository.findByEmail(email);
@@ -73,6 +97,16 @@ public class UserServiceImpl implements UserService {
 	public RoleEntite saveRole(RoleEntite role) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		UserEntite userEntity = userRepository.findByEmail(email);
+
+		if (userEntity == null)
+			throw new UsernameNotFoundException(email);
+
+		return new User(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<>());
 	}
 
 }

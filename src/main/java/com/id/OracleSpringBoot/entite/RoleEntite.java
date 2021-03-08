@@ -1,10 +1,13 @@
 package com.id.OracleSpringBoot.entite;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +19,9 @@ public class RoleEntite {
 	private Long id;
 
 	private String nom;
+
+	@ManyToMany(mappedBy = "roles")
+	private List<UserEntite> users;
 
 	public RoleEntite() {
 		super();
