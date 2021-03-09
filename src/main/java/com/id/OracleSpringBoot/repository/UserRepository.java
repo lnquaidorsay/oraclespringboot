@@ -16,7 +16,13 @@ public interface UserRepository extends JpaRepository<UserEntite, Long> {
 	UserEntite findByEmail(String email);
 
 	@Modifying
-	@Query(value = "SELECT ROLE_UTILISATEUR.NOM, ROLE_UTILISATEUR.ROLE_ID FROM ROLE_UTILISATEUR   INNER JOIN USERS_ROLES on users_roles.role_id = ROLE_UTILISATEUR.ROLE_ID   INNER JOIN UTILISATEURS on utilisateurs.utilisateur_id = USERS_ROLES.UTILISATEUR_ID  u WHERE UTILISATEURS.UTILISATEUR_ID = :userId", nativeQuery = true)
+	@Query(value = "SELECT ROLE_UTILISATEUR.NOM, ROLE_UTILISATEUR.ROLE_ID FROM ROLE_UTILISATEUR   INNER JOIN USERS_ROLES on users_roles.role_id = ROLE_UTILISATEUR.ROLE_ID   INNER JOIN UTILISATEURS on utilisateurs.utilisateur_id = USERS_ROLES.UTILISATEUR_ID   WHERE UTILISATEURS.UTILISATEUR_ID = :userId", nativeQuery = true)
 	List<RoleEntite> findAllUsersRole(@Param("userId") int userId);
+
+	@Query(value = "SELECT ROLE_UTILISATEUR.NOM " + "FROM ROLE_UTILISATEUR "
+			+ "INNER JOIN USERS_ROLES on users_roles.role_id = ROLE_UTILISATEUR.ROLE_ID "
+			+ "INNER JOIN UTILISATEURS on utilisateurs.utilisateur_id = USERS_ROLES.UTILISATEUR_ID "
+			+ "WHERE UTILISATEURS.UTILISATEUR_ID = :userId", nativeQuery = true)
+	List<String> findUsersRolesNative(@Param("userId") Long userId);
 
 }

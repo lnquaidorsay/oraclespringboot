@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -106,7 +108,27 @@ public class UserServiceImpl implements UserService {
 		if (userEntity == null)
 			throw new UsernameNotFoundException(email);
 
-		return new User(userEntity.getEmail(), userEntity.getPassword(), new ArrayList<>());
+		return new User(userEntity.getEmail(), userEntity.getPassword(), getGrantedAuthorities(userEntity));
+
+		// return new User(userEntity.getEmail(), userEntity.getPassword(), new
+		// ArrayList<>());
+	}
+
+	@Override
+	public List<RoleEntite> getListRole(String email) {
+		UserEntite user = userRepository.findByEmail(email);
+		return userRepository.findAllUsersRole(user.getId().intValue());
+	}
+
+	private List<GrantedAuthority> getGrantedAuthorities(UserEntite user) {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		List<String> roleList = userRepository.findUsersRolesNative(user.getId());
+		// Role role = user.getRole();
+		for (String roleEntite : roleList) {
+			authorities.add(new SimpleGrantedAuthority(roleEntite));
+		}
+		// authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+		return authorities;
 	}
 
 }

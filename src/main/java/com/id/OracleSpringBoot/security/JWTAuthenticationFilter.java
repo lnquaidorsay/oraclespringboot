@@ -2,6 +2,7 @@ package com.id.OracleSpringBoot.security;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -10,10 +11,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,6 +25,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.id.OracleSpringBoot.SpringApplicationContext;
 import com.id.OracleSpringBoot.entite.UserEntite;
+import com.id.OracleSpringBoot.repository.UserRepository;
 import com.id.OracleSpringBoot.service.UserService;
 
 import io.jsonwebtoken.Jwts;
@@ -29,6 +33,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
@@ -47,14 +54,22 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		 */
 		try {
 			appUser = new ObjectMapper().readValue(request.getInputStream(), UserEntite.class);
+
 		} catch (IOException e) {
 			new RuntimeException(e);
 		}
+
+		// UserEntite connectedUser = userRepository.findByEmail(appUser.getEmail());
+
+		// List<RoleEntite> rolesList =
+		// userRepository.findAllUsersRole(appUser.getId().intValue());
 
 		System.out.println("**********************");
 		System.out.println("nom:" + appUser.getNom());
 		System.out.println("email:" + appUser.getEmail());
 		System.out.println("password:" + appUser.getPassword());
+		System.out.println("id connectedUser : " + appUser.getId());
+		// System.out.println("role user:" + rolesList.get(0).getNom());
 
 		return authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(appUser.getEmail(), appUser.getPassword()));
@@ -75,18 +90,30 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		System.out.println("username : " + userName);
 
+		Collection<GrantedAuthority> authoritiesUser = ((User) authResult.getPrincipal()).getAuthorities();
+
 		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
 
 		UserEntite userDto = userService.getUser(userName);
+		// List<RoleEntite> listRole = userService.getListRole(userName);
+
+		// UserEntite connectedUser = userRepository.findByEmail(userDto.getEmail());
+
+		// List<RoleEntite> listRole =
+		// userRepository.findAllUsersRole(connectedUser.getId().intValue());
 
 		// String userName = ((User) authResult.getPrincipal()).getUsername();
 
 		// J'ajoute l'ensemble des roles qui se trouvent dans authResult dans ma liste
 		// roles
+		Collection<? extends GrantedAuthority> authRoles = authResult.getAuthorities();
 		List<String> roles = new ArrayList<String>();
 		authResult.getAuthorities().forEach(a -> {
 			roles.add(a.getAuthority());
 		});
+		/*
+		 * authResult.getAuthorities().forEach(a -> { roles.add(a.getAuthority()); });
+		 */
 
 		String token = Jwts.builder().setSubject(userName).claim("id", userDto.getId())
 				.claim("name", userDto.getNom() + " " + userDto.getPrenom())
