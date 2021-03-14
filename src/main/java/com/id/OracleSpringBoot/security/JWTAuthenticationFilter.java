@@ -41,6 +41,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		this.authenticationManager = authenticationManager;
 	}
 
+	/*
+	 * Si spring security veut savoir si un utilisateur existe ou pas il appelera la
+	 * méthode loadUserByUsername
+	 */
+
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
@@ -95,14 +100,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
 
 		UserEntite userDto = userService.getUser(userName);
-		// List<RoleEntite> listRole = userService.getListRole(userName);
-
-		// UserEntite connectedUser = userRepository.findByEmail(userDto.getEmail());
-
-		// List<RoleEntite> listRole =
-		// userRepository.findAllUsersRole(connectedUser.getId().intValue());
-
-		// String userName = ((User) authResult.getPrincipal()).getUsername();
 
 		// J'ajoute l'ensemble des roles qui se trouvent dans authResult dans ma liste
 		// roles
@@ -125,7 +122,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		 * généré le token
 		 */
 		String jwt = JWT.create().withIssuer(request.getRequestURI()).withSubject(user.getUsername())
-				.withClaim("name", userDto.getNom() + " " + userDto.getPrenom())
+				.withClaim("name", userDto.getNom() + " " + userDto.getPrenom()).withClaim("id", userDto.getId())
 				.withArrayClaim("roles", roles.toArray(new String[roles.size()]))
 				.withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
 				.sign(Algorithm.HMAC256(SecurityConstants.TOKEN_SECRET));

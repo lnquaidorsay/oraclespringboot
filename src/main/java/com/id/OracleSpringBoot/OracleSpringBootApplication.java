@@ -25,5 +25,5 @@ public class OracleSpringBootApplication {
 	public SpringApplicationContext springApplicationContext() {
 		return new SpringApplicationContext();
 	}
-//	https://stackoverflow.com/questions/66514100/spring-data-jpa-problem-to-get-list-of-object-manytomany-relationship
+
 }
